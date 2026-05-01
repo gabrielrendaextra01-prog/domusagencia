@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowRight, 
   CheckCircle2, 
@@ -109,6 +109,18 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -119,15 +131,8 @@ export default function App() {
   const logoUrl = "https://i.imgur.com/xTD827V.png";
   const whatsappLink = "https://wa.me/5519983935731?text=Olá! Gostaria de um orçamento para uma Landing Page de alta conversão.";
 
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
   return (
-    <div className="min-h-screen bg-surface-dark text-light selection:bg-brand selection:text-black">
+    <div ref={containerRef} className="min-h-screen bg-surface-dark text-light selection:bg-brand selection:text-black">
       
       {/* Scroll Progress Bar */}
       <motion.div 
@@ -237,19 +242,24 @@ export default function App() {
             </motion.p>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               className="flex flex-col sm:flex-row gap-6 items-center"
             >
-              <a 
+              <motion.a 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-full sm:w-auto bg-brand/90 backdrop-blur-md text-black px-10 py-6 text-xl font-black uppercase italic tracking-tighter rounded-2xl hover:scale-105 active:scale-95 transition-all text-center flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(226,255,0,0.2)] hover:shadow-[0_0_50px_rgba(226,255,0,0.4)] border border-white/20"
+                className="group w-full sm:w-auto bg-brand/90 backdrop-blur-md text-black px-10 py-6 text-xl font-black uppercase italic tracking-tighter rounded-2xl transition-all text-center flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(226,255,0,0.2)] hover:shadow-[0_0_50px_rgba(226,255,0,0.4)] border border-white/20"
               >
-                <MessageCircle size={24} fill="currentColor" />
+                <div className="relative flex items-center justify-center">
+                  <MessageCircle size={24} fill="currentColor" />
+                  <Smartphone size={10} className="absolute text-black" fill="black" />
+                </div>
                 Quero Minha Página Lucrativa
-              </a>
+              </motion.a>
               <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold leading-tight">
                 Vagas limitadas para <br/> projetos exclusivos este mês
               </div>
@@ -310,9 +320,9 @@ export default function App() {
       <section id="problema" className="py-24 border-y border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center">
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, x: -100, scale: 0.95 }}
+            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="md:col-span-8"
           >
             <h2 className="text-2xl md:text-5xl font-black uppercase italic tracking-tighter mb-4 leading-tight">
@@ -321,9 +331,9 @@ export default function App() {
             <p className="text-white/50 text-lg uppercase tracking-tight font-medium">Cada segundo de delay custa faturamento real do seu bolso.</p>
           </motion.div>
           <motion.div 
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, x: 100, scale: 0.5 }}
+            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
             className="md:col-span-4 flex justify-end"
           >
             <div className="w-20 h-20 border-2 border-brand flex items-center justify-center text-brand animate-spin-slow">
@@ -370,8 +380,12 @@ export default function App() {
                    desc: "Design de alta autoridade que elimina distrações e guia o olhar do lead exatamente para o botão de ação."
                  }
                ].map((item, i) => (
-                  <div 
+                  <motion.div 
                     key={i} 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
                     className={`border-b border-white/5 transition-all duration-300 overflow-hidden ${expandedIndex === i ? 'bg-white/[0.02] -mx-4 px-4' : ''}`}
                   >
                     <button 
@@ -402,7 +416,7 @@ export default function App() {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </motion.div>
                ))}
             </div>
           </div>
@@ -410,8 +424,17 @@ export default function App() {
       </section>
 
       {/* --- BENEFICIOS (GRID) --- */}
-      <section className="py-24 bg-surface-dark">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-1">
+      <section className="py-24 bg-surface-dark relative overflow-hidden">
+        <motion.div 
+          style={{ y: useTransform(scrollYProgress, [0, 1], [0, -100]) }}
+          className="absolute inset-0 opacity-[0.03] pointer-events-none flex flex-wrap gap-20 p-20"
+        >
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div key={i} className="text-9xl font-black italic select-none">DOMUS</div>
+          ))}
+        </motion.div>
+        
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-1 relative z-10">
           <Benefit 
             icon={<Target size={32} />} 
             title="Copy Estratégico"
@@ -492,7 +515,12 @@ export default function App() {
         <div className="absolute top-[-10%] right-[-10%] text-[200px] md:text-[300px] font-black italic opacity-5 pointer-events-none uppercase tracking-tighter">
           DOMUS
         </div>
-        <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="max-w-5xl mx-auto px-6 text-center relative z-10"
+        >
           <h2 className="text-[36px] md:text-8xl font-black uppercase italic tracking-tighter leading-[0.95] md:leading-[0.85] mb-10">
             Pronto para ver seus <br/> lucros <span className="underline decoration-black underline-offset-4 md:underline-offset-8">dispararem?</span>
           </h2>
@@ -500,16 +528,21 @@ export default function App() {
             Últimas 3 vagas disponíveis para implementação estratégica este mês. Não deixe seu ROI virar custo.
           </p>
           
-          <a 
+          <motion.a 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-6 bg-[#25D366]/90 backdrop-blur-md text-black px-10 md:px-16 py-6 md:py-8 text-xl md:text-2xl font-black uppercase italic tracking-tighter rounded-2xl hover:scale-105 transition-transform shadow-2xl border border-white/20"
+            className="group inline-flex items-center gap-6 bg-brand backdrop-blur-md text-black px-10 md:px-16 py-6 md:py-8 text-xl md:text-2xl font-black uppercase italic tracking-tighter rounded-2xl transition-transform shadow-[0_0_30px_rgba(226,255,0,0.3)] border border-white/20 animate-neon-pulse"
           >
             Falar com Especialista
-            <MessageCircle size={32} fill="currentColor" />
-          </a>
-        </div>
+            <div className="relative flex items-center justify-center">
+              <MessageCircle size={32} fill="currentColor" />
+              <Smartphone size={14} className="absolute text-black" fill="black" />
+            </div>
+          </motion.a>
+        </motion.div>
       </section>
 
       {/* --- FOOTER --- */}
@@ -538,7 +571,7 @@ export default function App() {
                 <h5 className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/40 mb-6">Social</h5>
                 <ul className="space-y-3 text-[11px] font-bold uppercase tracking-widest text-white/60">
                   <li><a href="https://www.instagram.com/domuspages/" target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors">Instagram</a></li>
-                  <li className="pt-2 text-brand text-[10px]">+55 19 98393-5731</li>
+                  <li><a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors">WhatsApp</a></li>
                 </ul>
               </div>
               <div className="hidden md:block">
@@ -570,10 +603,13 @@ export default function App() {
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#25D366] text-black w-14 h-14 flex items-center justify-center rounded-full border-4 border-black hover:scale-110 active:scale-95 transition-all shadow-2xl relative"
+          className="bg-brand text-black w-14 h-14 flex items-center justify-center rounded-full border-4 border-black hover:scale-110 active:scale-95 transition-all shadow-2xl relative animate-neon-pulse"
         >
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-black animate-pulse"></div>
-          <MessageCircle size={28} fill="currentColor" />
+          <div className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-black z-10"></div>
+          <div className="relative flex items-center justify-center">
+            <MessageCircle size={32} fill="currentColor" />
+            <Smartphone size={14} className="absolute text-black" fill="black" />
+          </div>
         </a>
       </div>
     </div>
