@@ -148,9 +148,9 @@ export default function App() {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#problema" className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors">A Metodologia</a>
-            <a href="#resultados" className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors">Portfólio</a>
+          <div className="hidden md:flex items-center gap-4 lg:gap-8">
+            <a href="#problema" className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors whitespace-nowrap">A Metodologia</a>
+            <a href="#resultados" className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors whitespace-nowrap">Portfólio</a>
             <a 
               href={whatsappLink}
               target="_blank"
@@ -212,7 +212,7 @@ export default function App() {
             >
               Performance e Conversão
             </motion.div>
-            <h1 className="text-[40px] md:text-8xl font-black leading-[1.1] md:leading-[0.9] tracking-tighter uppercase italic mb-8">
+            <h1 className="text-[40px] md:text-6xl lg:text-8xl font-black leading-[1.1] md:leading-[0.9] tracking-tighter uppercase italic mb-8">
               <motion.span 
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -275,22 +275,22 @@ export default function App() {
             <div className="grid grid-cols-2 gap-4">
               <motion.div 
                 whileHover={{ y: -5 }}
-                className="bg-surface p-8 border border-white/5"
+                className="bg-surface p-3 sm:p-6 lg:p-8 border border-white/5"
               >
-                <div className="text-5xl font-black italic text-brand">+35%</div>
+                <div className="text-xl sm:text-4xl lg:text-6xl font-black italic text-brand whitespace-nowrap tracking-tighter leading-none">+35%</div>
                 <div className="text-[10px] uppercase tracking-widest font-bold mt-2 text-white/50">Conversão Média</div>
               </motion.div>
               <motion.div 
                 whileHover={{ y: -5 }}
-                className="bg-surface p-8 border border-white/5"
+                className="bg-surface p-3 sm:p-6 lg:p-8 border border-white/5"
               >
-                <div className="text-5xl font-black italic text-brand">1.2s</div>
+                <div className="text-xl sm:text-4xl lg:text-6xl font-black italic text-brand whitespace-nowrap tracking-tighter leading-none">1.2s</div>
                 <div className="text-[10px] uppercase tracking-widest font-bold mt-2 text-white/50">Carregamento</div>
               </motion.div>
             </div>
             <motion.div 
               whileHover={{ scale: 1.01 }}
-              className="mt-4 bg-surface p-10 border border-white/5 relative overflow-hidden group shadow-2xl"
+              className="mt-4 bg-surface p-6 md:p-10 border border-white/5 relative overflow-hidden group shadow-2xl"
             >
                <div className="text-xs font-bold uppercase tracking-[0.3em] text-white/30 mb-8 underline decoration-brand underline-offset-4 italic">Engenharia Domus</div>
                <div className="space-y-4">
@@ -434,7 +434,7 @@ export default function App() {
           ))}
         </motion.div>
         
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-1 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
           <Benefit 
             icon={<Target size={32} />} 
             title="Copy Estratégico"
